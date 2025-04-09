@@ -1,0 +1,8 @@
+CREATE TABLE AccountTransaction (
+	AccountTransactionID BIGINT NOT NULL PRIMARY KEY IDENTITY(1,1),
+	Amount DECIMAL(10,6) NOT NULL,
+	IsDebit BIT NOT NULL,
+	CreatedBy VARCHAR(250) NOT NULL,
+	CreatedDate DATETIME NOT NULL DEFAULT GETDATE()
+);
+SELECT * FROM AccountTransaction
