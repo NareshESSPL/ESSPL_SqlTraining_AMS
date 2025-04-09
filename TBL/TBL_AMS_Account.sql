@@ -1,0 +1,14 @@
+CREATE TABLE AMS.Account (
+    AccountID BIGINT NOT NULL IDENTITY(1,1),
+    AccountNo INT NOT NULL,
+    IsSaving BIT NOT NULL,
+    CreatedBy VARCHAR(250) NOT NULL,
+    CreatedDate DATETIME NOT NULL
+);
+
+
+ALTER TABLE AMS.Account
+ADD CONSTRAINT [PK_AMS_Account_AccountID]  PRIMARY KEY  (AccountID);
+
+ALTER TABLE AMS.[Account]
+ADD CONSTRAINT DF_AMS_Account_Created DEFAULT GETDATE() FOR Created;
