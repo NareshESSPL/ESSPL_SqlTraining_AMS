@@ -1,4 +1,4 @@
-USE [SupriyaTask1]
+USE [AccountManagementSystem]
 
 create procedure AMS.Proc_UserAndAll_Insert
  @UserName	nvarchar(250),
