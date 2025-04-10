@@ -48,3 +48,19 @@ insert into Employee values (3, 'C', 3000, 'Naresh', getdate())
 insert into Employee values (4, 'A', 3000, 'Suresh', getdate())
 insert into Employee values (6, 'B', 5000,  'Mahesh', getdate())
 insert into Employee values (7, 'C', 6000,  'Mahesh', getdate())
+
+
+
+
+
+select * from 
+(
+  select 1 as id, 2000 as salary, 'B' as grade 
+) as x
+
+join 
+(
+  select 1 as id, 'addres' as address
+) as y
+
+on x.id = y.id
