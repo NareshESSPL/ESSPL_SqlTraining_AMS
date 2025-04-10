@@ -20,3 +20,15 @@ Create table CreditCardOffer
 insert into CreditCardOffer values (1, 'Offer1')
 insert into CreditCardOffer values (2, 'Offer2')
 insert into CreditCardOffer values (Null, 'Offer2')
+
+Create table Employee
+(
+  EmployeeID BIGINT NOT NULL PRIMARY KEY,
+  ManagerID BIGINT,
+  Name VARCHAR(250)
+)
+
+insert into Employee values (1, Null, 'Ankita')
+insert into Employee values (2, 1, 'Rakesh')
+insert into Employee values (3, 2,'Naresh')
+insert into Employee values (4, 2,'Suresh')
