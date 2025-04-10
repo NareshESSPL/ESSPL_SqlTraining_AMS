@@ -1,0 +1,52 @@
+USE BankingManagementSystem; 
+GO
+
+CREATE PROCEDURE BMS.PROC_USER_INSERTALL
+    @Username NVarchar(250),
+    @DOB DateTime,
+    @DOJ DateTime,
+    @BALANCE Decimal(10,6),
+    @AccountNo Int,
+    @MOBILENO BigInt,
+    @Address NVarchar(max),
+    @IsSaving Bit,
+    @IsDebit Bit,
+    @Amount Decimal(10,6),
+    @CreatedBy Varchar(250) = 'admin'
+
+
+	AS BEGIN
+	DECLARE @UserID BIGINT
+	DECLARE @AccountID BIGINT        
+
+
+	    INSERT INTO BMS.[user] (Username, DOB,DOJ,Balance,MobileNo,CreatedBy)
+    VALUES (@Username, @DOB, @DOJ, @BALANCE, @MOBILENO, @CreatedBy)
+
+	SET @UserId = SCOPE_IDENTITY()
+
+	INSERT INTO BMS.[Address] (UserID,Address,CreatedBy)
+	VALUES (@UserID,@Address,@CreatedBy)
+
+	INSERT INTO BMS.[Account] (AccountID,Username,AccountNo, IsSaving, CreatedBy)
+	VALUES (@AccountID,@Username,@AccountNo,@IsSaving,@CreatedBy)
+
+	SET @AccountID = SCOPE_IDENTITY()
+
+	INSERT INTO BMS.[UserAccountMapping](UserID,AccountID,Username,CreatedBy)
+	VALUES(@UserID,@AccountID,@Username,@CreatedBy)
+
+	INSERT INTO BMS.[AccountTransaction](Amount,IsDebit,CreatedBy)
+	VALUES(@AccountID,@Amount,@IsDebit,@CreatedBy)
+
+END;
+GO
+
+EXEC BMS.PROC_USER_INSERTALL 'test', '2025-02-02', '2025-02-02', 1000.00, 98765432,23679,'95 Fawn Ave',1,0,500,'admin';
+GO
+
+SELECT * FROM BMS.[USER];
+SELECT * FROM BMS.[Address];
+SELECT * FROM BMS.[Account];
+SELECT * FROM BMS.[UserAccountMapping];
+SELECT * FROM BMS.[AccountTransaction];
