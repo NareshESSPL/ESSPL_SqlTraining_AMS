@@ -9,3 +9,14 @@ CREATE TABLE AMS.CreditCard
 insert into AMS.CreditCard values(71, 1111111, 111);
 insert into AMS.CreditCard values(1111, 1111111, null);
 insert into AMS.CreditCard values(null, 8888, null);
+
+Create table CreditCardOffer
+(
+  CreditCardOfferID BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+  CreditCardID BIGINT,
+  Offer VARCHAR(MAX)
+)
+
+insert into CreditCardOffer values (1, 'Offer1')
+insert into CreditCardOffer values (2, 'Offer2')
+insert into CreditCardOffer values (Null, 'Offer2')
