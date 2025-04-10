@@ -1,5 +1,6 @@
-USE BankingManagementSystem; 
-GO
+USE BankingManagementSystem; go
+
+-- Stored procedure to insert a new user and their associated details
 
 CREATE PROCEDURE BMS.PROC_USER_INSERTALL
     @Username NVarchar(250),
@@ -7,6 +8,7 @@ CREATE PROCEDURE BMS.PROC_USER_INSERTALL
     @DOJ DateTime,
     @BALANCE Decimal(10,6),
     @AccountNo Int,
+    @AccountTransaction BigInt,
     @MOBILENO BigInt,
     @Address NVarchar(max),
     @IsSaving Bit,
@@ -14,35 +16,43 @@ CREATE PROCEDURE BMS.PROC_USER_INSERTALL
     @Amount Decimal(10,6),
     @CreatedBy Varchar(250) = 'admin'
 
-
+ -- Declare variables to store the newly generated UserID and AccountID
 	AS BEGIN
 	DECLARE @UserID BIGINT
 	DECLARE @AccountID BIGINT        
 
 
-	    INSERT INTO BMS.[user] (Username, DOB,DOJ,Balance,MobileNo,CreatedBy)
+-- Insert basic user information into the BMS.[user] table
+    INSERT INTO BMS.[user] (Username, DOB,DOJ,Balance,MobileNo,CreatedBy)
     VALUES (@Username, @DOB, @DOJ, @BALANCE, @MOBILENO, @CreatedBy)
 
-	SET @UserId = SCOPE_IDENTITY()
+-- Retrieve the last inserted UserID
+   SET @UserId = SCOPE_IDENTITY()
 
-	INSERT INTO BMS.[Address] (UserID,Address,CreatedBy)
-	VALUES (@UserID,@Address,@CreatedBy)
+-- Insert basic user information into the BMS.[address] table
+   INSERT INTO BMS.[Address] (UserID,Address,CreatedBy)
+   VALUES (@UserID,@Address,@CreatedBy)
 
-	INSERT INTO BMS.[Account] (AccountID,Username,AccountNo, IsSaving, CreatedBy)
-	VALUES (@AccountID,@Username,@AccountNo,@IsSaving,@CreatedBy)
+-- Insert basic user information into the BMS.[account] table
+   INSERT INTO BMS.[Account] (AccountID,Username,AccountNo, IsSaving, CreatedBy)
+   VALUES (@AccountID,@Username,@AccountNo,@IsSaving,@CreatedBy)
 
-	SET @AccountID = SCOPE_IDENTITY()
+-- Insert basic user information into the BMS.[account] table
+   SET @AccountID = SCOPE_IDENTITY()
 
-	INSERT INTO BMS.[UserAccountMapping](UserID,AccountID,Username,CreatedBy)
-	VALUES(@UserID,@AccountID,@Username,@CreatedBy)
+-- Insert user information into the BMS.[UserAccountMapping] table
+   INSERT INTO BMS.[UserAccountMapping](UserID,AccountID,Username,CreatedBy)
+   VALUES(@UserID,@AccountID,@Username,@CreatedBy)
 
-	INSERT INTO BMS.[AccountTransaction](Amount,IsDebit,CreatedBy)
-	VALUES(@AccountID,@Amount,@IsDebit,@CreatedBy)
+-- Insert user information into the BMS.[AccountTransaction] table
+   INSERT INTO BMS.[AccountTransaction](AccountTransaction,Amount,IsDebit,CreatedBy)
+   VALUES(@AccountTransaction,@Amount,@IsDebit,@CreatedBy)
 
 END;
 GO
 
-EXEC BMS.PROC_USER_INSERTALL 'test', '2025-02-02', '2025-02-02', 1000.00, 98765432,23679,'95 Fawn Ave',1,0,500,'admin';
+-- Execute the stored procedure
+EXEC BMS.PROC_USER_INSERTALL 'Anything', 2002-07-26,2002-10-26,1325.95,56347,7,178953,'99 Ridge Lawn',0,1,50.00,'Test1';
 GO
 
 SELECT * FROM BMS.[USER];
