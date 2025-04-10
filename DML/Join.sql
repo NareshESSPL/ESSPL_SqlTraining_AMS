@@ -47,10 +47,18 @@ insert into Employee values (1, Null, 'Ankita')
 insert into Employee values (2, 1, 'Rakesh')
 insert into Employee values (3, 2,'Naresh')
 insert into Employee values (4, 2,'Suresh')
+insert into Employee values (6, 4,'Mahesh', getdate())
+insert into Employee values (7, 2,'Mahesh', getdate())
 
 select * from Employee
 
 select emp.EmployeeID, emp.ManagerID, emp.Name EmpName, man.Name Manager
+from Employee emp left join Employee man 
+on emp.ManagerID = man.EmployeeID
+
+
+select emp.EmployeeID, emp.ManagerID, emp.Name EmpName, 
+ISNULL(man.Name,'I am the boss') 'Boss Boss'
 from Employee emp left join Employee man 
 on emp.ManagerID = man.EmployeeID
 
