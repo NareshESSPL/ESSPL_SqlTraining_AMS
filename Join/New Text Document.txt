@@ -1,0 +1,11 @@
+CREATE TABLE AMS.CreditCard
+(
+  CreditCard BIGINT IDENTITY(1,1) PRIMARY KEY,
+  UserID BIGINT,
+  MobileNo VARCHAR(10),
+  CardNo VARCHAR(16)
+)
+
+insert into AMS.CreditCard values(71, 1111111, 111);
+insert into AMS.CreditCard values(1111, 1111111, null);
+insert into AMS.CreditCard values(null, 8888, null);
