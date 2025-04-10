@@ -10,6 +10,20 @@ insert into AMS.CreditCard values(71, 1111111, 111);
 insert into AMS.CreditCard values(1111, 1111111, null);
 insert into AMS.CreditCard values(null, 8888, null);
 
+select * from AMS.[User]
+select * from AMS.[CreditCard]
+
+select u.UserID U_uid, c.CreditCard, c.UserID c_uid, c.MobileNo
+from AMS.[User] as u left join AMS.CreditCard c on
+u.UserID = c.UserID
+
+
+select u.UserID U_uid, c.CreditCard, c.UserID c_uid, c.MobileNo
+from AMS.[User] as u left join AMS.CreditCard c on
+u.UserID = c.UserID
+
+
+
 Create table CreditCardOffer
 (
   CreditCardOfferID BIGINT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -20,6 +34,7 @@ Create table CreditCardOffer
 insert into CreditCardOffer values (1, 'Offer1')
 insert into CreditCardOffer values (2, 'Offer2')
 insert into CreditCardOffer values (Null, 'Offer2')
+
 
 Create table Employee
 (
@@ -33,18 +48,14 @@ insert into Employee values (2, 1, 'Rakesh')
 insert into Employee values (3, 2,'Naresh')
 insert into Employee values (4, 2,'Suresh')
 
-Create table Employee
-(
-  EmployeeID BIGINT NOT NULL PRIMARY KEY,
-  Grade Char(1),
-  Salary Decimal(10, 6),
-  [Name] VARCHAR(250),
-  DOJ DateTime 
-)
+select * from Employee
 
-insert into Employee values (1, 'A', 1000, 'Ankita', getdate())
-insert into Employee values (2, 'B', 2000, 'Rakesh', getdate())
-insert into Employee values (3, 'C', 3000, 'Naresh', getdate())
-insert into Employee values (4, 'A', 3000, 'Suresh', getdate())
-insert into Employee values (6, 'B', 5000,  'Mahesh', getdate())
-insert into Employee values (7, 'C', 6000,  'Mahesh', getdate())
+select emp.EmployeeID, emp.ManagerID, emp.Name EmpName, man.Name Manager
+from Employee emp left join Employee man 
+on emp.ManagerID = man.EmployeeID
+
+select distinct man.Name Manager
+from Employee emp left join Employee man 
+on emp.ManagerID = man.EmployeeID
+
+
