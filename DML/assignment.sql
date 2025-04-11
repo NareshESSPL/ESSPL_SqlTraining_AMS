@@ -4,7 +4,7 @@ as
 begin
 end
 
-exec TestMultiInput '111:2222', '123:677', '890:900'
+exec TestMultiInput '111:2222, 123:677, 890:900'
 
 -----sample output
 --AcountID AcountNo
