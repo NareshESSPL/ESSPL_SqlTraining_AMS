@@ -24,8 +24,29 @@ create proc AMS.test_udt
 as
 begin
   declare @buser as AMS.BasicUser
-  insert into @buser values (1, 'test2', 987654322),
-                            (2, 'test2', 987654322)
+  insert into @buser values ('test2', 987654322),
+                            ('test2', 987654322)
 
   select * from @buser
 end
+go
+
+Create type AMS.udt_Account as table
+(
+  AccountID BIGINT,
+  AccountNo BIGINT
+)
+go
+
+alter proc AMS.test_udt2
+ @acountList AMS.udt_Account readonly
+as
+begin
+  select * from @acountList
+   --print 'hello'
+end
+go
+
+declare @InputAccount AMS.udt_Account
+insert into @InputAccount values(1111, 2222), (88888, 77777);
+exec AMS.test_udt2 @acountList = @InputAccount
