@@ -22,7 +22,7 @@ create table #tempInput
   input varchar(200)
 )
 
-insert into #tempInput values('111:2222'),( '123:677')
+insert into #tempInput values ('111:2222, 123:677, 890:900')
 CREATE PROCEDURE TestMultiInput
     @Input VARCHAR(MAX)
 AS
