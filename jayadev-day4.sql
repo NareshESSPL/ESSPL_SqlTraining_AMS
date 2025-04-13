@@ -1,32 +1,39 @@
--- Step 1: Drop the stored procedure that uses the type
-DROP PROCEDURE IF EXISTS AM.User_account_detail;
-GO
+-- Create the procedure
+CREATE PROCEDURE TestMultiInput
+    @Input VARCHAR(MAX)
+AS
+BEGIN
+    DECLARE @Str VARCHAR(100), @AccountID VARCHAR(100), @AccountNo VARCHAR(100)
 
--- Step 2: Drop the type now that nothing references it
-DROP TYPE IF EXISTS AM.Account;
-GO
+    -- Table to store results
+    DECLARE @Result TABLE (
+        AccountID VARCHAR(100),
+        AccountNo VARCHAR(100)
+    );
 
--- Step 3: Recreate the type WITHOUT IDENTITY
-CREATE TYPE AM.Account AS TABLE  
-(  
-    AccountId BIGINT,     
-    AccountNo BIGINT  
-);
-GO
+    -- Loop to split input by comma
+    WHILE CHARINDEX(',', @Input) > 0
+    BEGIN
+        SET @Str = LTRIM(RTRIM(LEFT(@Input, CHARINDEX(',', @Input) - 1)));
 
--- Step 4: Recreate the stored procedure
-CREATE PROCEDURE AM.User_account_detail  
-    @accountList AM.Account READONLY  
-AS  
-BEGIN  
-    SELECT * FROM @accountList;  
-END;
-GO
+        SET @AccountID = LEFT(@Str, CHARINDEX(':', @Str) - 1);
+        SET @AccountNo = RIGHT(@Str, LEN(@Str) - CHARINDEX(':', @Str));
 
--- Step 5: Declare and use the table variable
-DECLARE @InputAccount AM.Account;
+        INSERT INTO @Result VALUES (@AccountID, @AccountNo);
 
-INSERT INTO @InputAccount (AccountId, AccountNo)  
-VALUES (111, 2222), (123, 677) ,(890,900);
+        SET @Input = LTRIM(RTRIM(STUFF(@Input, 1, CHARINDEX(',', @Input), '')))
+    END
 
-EXEC AM.User_account_detail @accountList = @InputAccount;
+    -- Handle the last value (if any)
+    IF LEN(@Input) > 0 AND CHARINDEX(':', @Input) > 0
+    BEGIN
+        SET @AccountID = LEFT(@Input, CHARINDEX(':', @Input) - 1);
+        SET @AccountNo = RIGHT(@Input, LEN(@Input) - CHARINDEX(':', @Input));
+
+        INSERT INTO @Result VALUES (@AccountID, @AccountNo);
+    END
+
+    -- Final output
+    SELECT AccountID, AccountNo FROM @Result;
+END
+EXEC TestMultiInput '111:2222,123:677,890:900';
