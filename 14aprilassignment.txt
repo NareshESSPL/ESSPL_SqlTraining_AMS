@@ -1,0 +1,233 @@
+  use AccountmanagementSystem12
+  USE AccountManagementSystem12;
+GO
+-- Create AMS schema if it doesn't exist
+IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = 'AMS')
+    EXEC('CREATE SCHEMA AMS');
+GO
+
+-- Drop tables if they already exist (optional for clean rerun)
+IF OBJECT_ID('AMS.AccountTransaction') IS NOT NULL DROP TABLE AMS.AccountTransaction;
+IF OBJECT_ID('AMS.UserAccountMapping') IS NOT NULL DROP TABLE AMS.UserAccountMapping;
+IF OBJECT_ID('AMS.Address') IS NOT NULL DROP TABLE AMS.Address;
+IF OBJECT_ID('AMS.Account') IS NOT NULL DROP TABLE AMS.Account;
+IF OBJECT_ID('AMS.[User]') IS NOT NULL DROP TABLE AMS.[User];
+GO
+
+-- Create AMS.[User]
+CREATE TABLE AMS.[User] (
+    UserID BIGINT IDENTITY(1,1) PRIMARY KEY,
+    UserName NVARCHAR(250),
+    DOB DATETIME,
+    DOJ DATETIME,
+    AccountNo INT,
+    MobileNo INT,
+    CreatedBy VARCHAR(250),
+    Created DATETIME
+);
+
+-- Create AMS.[Address]
+CREATE TABLE AMS.[Address] (
+    AddressID BIGINT IDENTITY(1,1) PRIMARY KEY,
+    UserID BIGINT,
+    AddressDetail NVARCHAR(MAX),
+    CreatedBy VARCHAR(250),
+    FOREIGN KEY (UserID) REFERENCES AMS.[User](UserID)
+);
+
+-- Create AMS.[Account]
+CREATE TABLE AMS.[Account] (
+    AccountID BIGINT IDENTITY(1,1) PRIMARY KEY,
+    AccountNo INT,
+    IsSaving BIT,
+    CreatedBy VARCHAR(250)
+);
+
+-- Create AMS.[UserAccountMapping]
+CREATE TABLE AMS.[UserAccountMapping] (
+    MappingID BIGINT IDENTITY(1,1) PRIMARY KEY,
+    UserID BIGINT,
+    AccountID BIGINT,
+    CreatedBy VARCHAR(250),
+    FOREIGN KEY (UserID) REFERENCES AMS.[User](UserID),
+    FOREIGN KEY (AccountID) REFERENCES AMS.[Account](AccountID)
+);
+
+-- Create AMS.[AccountTransaction]
+CREATE TABLE AMS.[AccountTransaction] (
+    TransactionID BIGINT IDENTITY(1,1) PRIMARY KEY,
+    AccountID BIGINT,
+    Amount DECIMAL(10,6),
+    IsDebit BIT,
+    CreatedBy VARCHAR(250),
+    FOREIGN KEY (AccountID) REFERENCES AMS.[Account](AccountID)
+);
+
+-- Insert sample users
+INSERT INTO AMS.[User] (UserName, DOB, DOJ, AccountNo, MobileNo, CreatedBy, Created)
+VALUES 
+('test1', '1971-02-01', '2025-04-12', 10002, 12346, 'testdata', GETDATE()),
+('test2', '1971-03-01', '2025-04-11', 10003, 12347, 'testdata', GETDATE());
+
+-- Insert accounts
+INSERT INTO AMS.[Account] (AccountNo, IsSaving, CreatedBy)
+VALUES 
+(10002, 1, 'testdata'),
+(10003, 1, 'testdata');
+
+-- Insert addresses
+INSERT INTO AMS.[Address] (UserID, AddressDetail, CreatedBy)
+VALUES 
+(1, 'Test Address 1', 'testdata'),
+(2, 'Test Address 2', 'testdata');
+
+-- Map users to accounts
+INSERT INTO AMS.[UserAccountMapping] (UserID, AccountID, CreatedBy)
+VALUES 
+(1, 1, 'testdata'),
+(2, 2, 'testdata');
+
+-- Insert transactions
+INSERT INTO AMS.[AccountTransaction] (AccountID, Amount, IsDebit, CreatedBy)
+VALUES 
+(1, 10.00, 0, 'testdata'),
+(2, 10.00, 0, 'testdata');
+
+-- Final: Query all tables
+SELECT * FROM AMS.[User];
+SELECT * FROM AMS.[Address];
+SELECT * FROM AMS.[Account];
+SELECT * FROM AMS.[UserAccountMapping];
+SELECT * FROM AMS.[AccountTransaction];
+
+
+/** Object:  StoredProcedure [AMS].[TestSP]    Script Date: 14-04-2025 11:40:35 **/
+SET ANSI_NULLS ON;
+GO
+
+SET QUOTED_IDENTIFIER ON;
+GO
+
+ALTER PROCEDURE [AMS].[TestSP]
+    @MaxCount BIGINT = 1000
+AS
+BEGIN
+    -- Clean up existing data
+    TRUNCATE TABLE AMS.AccountTransaction;
+    TRUNCATE TABLE AMS.UserAccountMapping;
+
+    DELETE FROM AMS.Account;
+    DBCC CHECKIDENT ('AMS.Account', RESEED, 0);
+
+    TRUNCATE TABLE AMS.[Address];
+
+    DELETE FROM AMS.[User];
+    DBCC CHECKIDENT ('AMS.[User]', RESEED, 0);
+
+    -- Declare variables
+    DECLARE 
+        @TempUserName NVARCHAR(250) = 'test',
+        @UserName NVARCHAR(250),
+        @DOB DATETIME = DATEADD(MONTH, 1, CAST('1970-01-01' AS DATE)),
+        @DOJ DATETIME = GETDATE(),
+        @Balance DECIMAL(10, 6) = 1000,
+        @AccountNo INT = 10001,
+        @MobileNo INT = 12345,
+        @CreatedBy VARCHAR(250) = 'testdata',
+        @Created DATETIME = GETDATE(),
+        @IsSaving BIT = 1,
+        @Address NVARCHAR(MAX) = 'test add',
+        @UserID BIGINT,
+        @AccountID BIGINT,
+        @Amount DECIMAL(10, 6) = 10,
+        @IsDebit BIT = 0,
+        @count INT = 0;
+
+    -- Start loop
+    WHILE @count <= @MaxCount
+    BEGIN
+        -- Increment loop counter
+        SET @count = @count + 1;
+
+        -- Update values for each iteration
+        SET @DOB = DATEADD(MONTH, 1, @DOB);
+        SET @UserName = @TempUserName + CAST(@count AS VARCHAR);
+        SET @DOJ = DATEADD(DAY, -1, @DOJ);
+        SET @AccountNo = @AccountNo + 1;
+        SET @MobileNo = @MobileNo + 1;
+
+        -- Insert into User table
+        INSERT INTO AMS.[User] ([UserName], [DOB], [DOJ], [AccountNo], [MobileNo], [CreatedBy], [Created])
+        VALUES (
+            @UserName,
+            @DOB,
+            @DOJ,
+            @AccountNo,
+            @MobileNo,
+            @CreatedBy,
+            @Created
+        );
+
+        SET @UserID = SCOPE_IDENTITY();
+
+        -- Insert into Account
+        INSERT INTO AMS.[Account](AccountNo, IsSaving, CreatedBy)
+        VALUES (@AccountNo, @IsSaving, @CreatedBy);
+
+        SET @AccountID = SCOPE_IDENTITY();
+
+        -- Insert into Address
+        INSERT INTO AMS.[Address](UserID, AddressDetail, CreatedBy)
+        VALUES (@UserID, @Address, @CreatedBy);
+
+        -- Insert into UserAccountMapping
+        INSERT INTO AMS.[UserAccountMapping](UserID, AccountID, CreatedBy)
+        VALUES (@UserID, @AccountID, @CreatedBy);
+
+        -- Insert into AccountTransaction
+        INSERT INTO AMS.AccountTransaction(AccountID, Amount, IsDebit, CreatedBy)
+        VALUES (@AccountID, @Amount, @IsDebit, @CreatedBy);
+    END
+
+    -- Return all data
+    SELECT * FROM AMS.[User];
+    SELECT * FROM AMS.[Address];
+    SELECT * FROM AMS.[Account];
+    SELECT * FROM AMS.[UserAccountMapping];
+    SELECT * FROM AMS.[AccountTransaction];
+END
+SELECT 
+    UserID,
+    UserName,
+    DOB,
+    DATEDIFF(YEAR, DOB, GETDATE()) - 
+        CASE 
+            WHEN MONTH(DOB) > MONTH(GETDATE()) 
+              OR (MONTH(DOB) = MONTH(GETDATE()) AND DAY(DOB) > DAY(GETDATE())) 
+            THEN 1 
+            ELSE 0 
+        END AS Age
+FROM AMS.[User];
+WITH AccountBalance AS (
+    SELECT 
+        at.AccountID,
+        SUM(CASE WHEN at.IsDebit = 0 THEN at.Amount ELSE -at.Amount END) AS Balance
+    FROM AMS.AccountTransaction at
+    GROUP BY at.AccountID
+),
+AverageBalance AS (
+    SELECT AVG(Balance) AS AvgSalary
+    FROM AccountBalance
+)
+SELECT 
+    u.UserID,
+    u.UserName,
+    a.AccountID,
+    ab.Balance AS Salary,
+    avgBal.AvgSalary
+FROM AMS.[User] u
+JOIN AMS.UserAccountMapping uam ON u.UserID = uam.UserID
+JOIN AMS.Account a ON a.AccountID = uam.AccountID
+JOIN AccountBalance ab ON ab.AccountID = a.AccountID
+CROSS JOIN AverageBalance avgBal
+WHERE ab.Balance > avgBal.AvgSalary;
