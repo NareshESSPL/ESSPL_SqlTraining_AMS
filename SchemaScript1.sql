@@ -1,99 +1,20 @@
 USE [master]
 GO
-/****** Object:  Database [AccountManagementSystem]    Script Date: 14-04-2025 11:13:23 ******/
-CREATE DATABASE [AccountManagementSystem]
- CONTAINMENT = NONE
- ON  PRIMARY 
-( NAME = N'AccountManagementSystem', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\AccountManagementSystem.mdf' , SIZE = 8192KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
- LOG ON 
-( NAME = N'AccountManagementSystem_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL16.MSSQLSERVER\MSSQL\DATA\AccountManagementSystem_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
- WITH CATALOG_COLLATION = DATABASE_DEFAULT, LEDGER = OFF
+/****** Object:  Database [AccountManagementSystem]    Script Date: 14-04-2025 11:33:17 ******/
+CREATE DATABASE [AccountManagementSystem12]
+go
+USE [AccountManagementSystem12]
 GO
-ALTER DATABASE [AccountManagementSystem] SET COMPATIBILITY_LEVEL = 160
-GO
-IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
-begin
-EXEC [AccountManagementSystem].[dbo].[sp_fulltext_database] @action = 'enable'
-end
-GO
-ALTER DATABASE [AccountManagementSystem] SET ANSI_NULL_DEFAULT OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET ANSI_NULLS OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET ANSI_PADDING OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET ANSI_WARNINGS OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET ARITHABORT OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET AUTO_CLOSE OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET AUTO_SHRINK OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET AUTO_UPDATE_STATISTICS ON 
-GO
-ALTER DATABASE [AccountManagementSystem] SET CURSOR_CLOSE_ON_COMMIT OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET CURSOR_DEFAULT  GLOBAL 
-GO
-ALTER DATABASE [AccountManagementSystem] SET CONCAT_NULL_YIELDS_NULL OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET NUMERIC_ROUNDABORT OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET QUOTED_IDENTIFIER OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET RECURSIVE_TRIGGERS OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET  ENABLE_BROKER 
-GO
-ALTER DATABASE [AccountManagementSystem] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET DATE_CORRELATION_OPTIMIZATION OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET TRUSTWORTHY OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET ALLOW_SNAPSHOT_ISOLATION OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET PARAMETERIZATION SIMPLE 
-GO
-ALTER DATABASE [AccountManagementSystem] SET READ_COMMITTED_SNAPSHOT OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET HONOR_BROKER_PRIORITY OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET RECOVERY FULL 
-GO
-ALTER DATABASE [AccountManagementSystem] SET  MULTI_USER 
-GO
-ALTER DATABASE [AccountManagementSystem] SET PAGE_VERIFY CHECKSUM  
-GO
-ALTER DATABASE [AccountManagementSystem] SET DB_CHAINING OFF 
-GO
-ALTER DATABASE [AccountManagementSystem] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
-GO
-ALTER DATABASE [AccountManagementSystem] SET TARGET_RECOVERY_TIME = 60 SECONDS 
-GO
-ALTER DATABASE [AccountManagementSystem] SET DELAYED_DURABILITY = DISABLED 
-GO
-ALTER DATABASE [AccountManagementSystem] SET ACCELERATED_DATABASE_RECOVERY = OFF  
-GO
-EXEC sys.sp_db_vardecimal_storage_format N'AccountManagementSystem', N'ON'
-GO
-ALTER DATABASE [AccountManagementSystem] SET QUERY_STORE = ON
-GO
-ALTER DATABASE [AccountManagementSystem] SET QUERY_STORE (OPERATION_MODE = READ_WRITE, CLEANUP_POLICY = (STALE_QUERY_THRESHOLD_DAYS = 30), DATA_FLUSH_INTERVAL_SECONDS = 900, INTERVAL_LENGTH_MINUTES = 60, MAX_STORAGE_SIZE_MB = 1000, QUERY_CAPTURE_MODE = AUTO, SIZE_BASED_CLEANUP_MODE = AUTO, MAX_PLANS_PER_QUERY = 200, WAIT_STATS_CAPTURE_MODE = ON)
-GO
-USE [AccountManagementSystem]
-GO
-/****** Object:  Schema [AMS]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  Schema [AMS]    Script Date: 14-04-2025 11:33:17 ******/
 CREATE SCHEMA [AMS]
 GO
-/****** Object:  UserDefinedDataType [AMS].[PhoneNo]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  UserDefinedDataType [AMS].[PhoneNo]    Script Date: 14-04-2025 11:33:17 ******/
 CREATE TYPE [AMS].[PhoneNo] FROM [varchar](10) NULL
 GO
-/****** Object:  UserDefinedDataType [dbo].[PhoneNo]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  UserDefinedDataType [dbo].[PhoneNo]    Script Date: 14-04-2025 11:33:17 ******/
 CREATE TYPE [dbo].[PhoneNo] FROM [varchar](10) NULL
 GO
-/****** Object:  UserDefinedTableType [AMS].[BasicUser]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  UserDefinedTableType [AMS].[BasicUser]    Script Date: 14-04-2025 11:33:17 ******/
 CREATE TYPE [AMS].[BasicUser] AS TABLE(
 	[userid] [int] IDENTITY(1,1) NOT NULL,
 	[username] [nvarchar](100) NULL,
@@ -104,18 +25,18 @@ CREATE TYPE [AMS].[BasicUser] AS TABLE(
 )WITH (IGNORE_DUP_KEY = OFF)
 )
 GO
-/****** Object:  UserDefinedTableType [AMS].[udt_Account]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  UserDefinedTableType [AMS].[udt_Account]    Script Date: 14-04-2025 11:33:17 ******/
 CREATE TYPE [AMS].[udt_Account] AS TABLE(
 	[AccountID] [bigint] NULL,
 	[AccountNo] [bigint] NULL
 )
 GO
-/****** Object:  UserDefinedTableType [dbo].[udt_testing]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  UserDefinedTableType [dbo].[udt_testing]    Script Date: 14-04-2025 11:33:17 ******/
 CREATE TYPE [dbo].[udt_testing] AS TABLE(
 	[id] [int] NULL
 )
 GO
-/****** Object:  UserDefinedFunction [AMS].[GetFinalBill]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  UserDefinedFunction [AMS].[GetFinalBill]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -132,7 +53,7 @@ begin
 
 end
 GO
-/****** Object:  UserDefinedFunction [dbo].[func_testing]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  UserDefinedFunction [dbo].[func_testing]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -153,7 +74,7 @@ begin
  return
 end
 GO
-/****** Object:  Table [AMS].[User]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  Table [AMS].[User]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -173,7 +94,7 @@ CREATE TABLE [AMS].[User](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [AMS].[Account]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  Table [AMS].[Account]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -191,7 +112,7 @@ CREATE TABLE [AMS].[Account](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [AMS].[UserAccountMapping]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  Table [AMS].[UserAccountMapping]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -208,13 +129,13 @@ CREATE TABLE [AMS].[UserAccountMapping](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  View [AMS].[vw_account]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  View [AMS].[vw_account]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 Create View [AMS].[vw_account] as
-select U.UserID,U.UserName,U.Balance,A.AccountID from
+select U.UserID,U.UserName, A.AccountID from
 	 
 AMS.[User] U left Join AMS.[UserAccountMapping] M on U.UserID=M.UserID
 
@@ -222,7 +143,7 @@ left join AMS.[Account] A on M.AccountId = A.AccountID
 
 where U.UserID > 70
 GO
-/****** Object:  Table [AMS].[AccountTransaction]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  Table [AMS].[AccountTransaction]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -240,7 +161,7 @@ CREATE TABLE [AMS].[AccountTransaction](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [AMS].[Address]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  Table [AMS].[Address]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -257,7 +178,7 @@ CREATE TABLE [AMS].[Address](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [AMS].[CreditCard]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  Table [AMS].[CreditCard]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -273,7 +194,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[CreditCardOffer]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  Table [dbo].[CreditCardOffer]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -288,7 +209,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[Employee]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  Table [dbo].[Employee]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -305,7 +226,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[IdentTets]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  Table [dbo].[IdentTets]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -319,7 +240,7 @@ PRIMARY KEY CLUSTERED
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
-/****** Object:  Table [dbo].[STG_User]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  Table [dbo].[STG_User]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -364,7 +285,7 @@ REFERENCES [AMS].[User] ([UserID])
 GO
 ALTER TABLE [AMS].[UserAccountMapping] CHECK CONSTRAINT [FK_AMS_UserAccountMapping_UserID]
 GO
-/****** Object:  StoredProcedure [AMS].[Proc_User_Insert]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  StoredProcedure [AMS].[Proc_User_Insert]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -381,7 +302,7 @@ as begin
   (@UserName, @DOB, @DOJ,  @AccountNo, @MobileNo, @CreatedBy)  
 end  
 GO
-/****** Object:  StoredProcedure [AMS].[Proc_UserAndAddress_Insert]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  StoredProcedure [AMS].[Proc_UserAndAddress_Insert]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -409,7 +330,7 @@ as begin
   
 end
 GO
-/****** Object:  StoredProcedure [AMS].[test_udt]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  StoredProcedure [AMS].[test_udt]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -424,7 +345,7 @@ begin
   select * from @buser
 end
 GO
-/****** Object:  StoredProcedure [AMS].[test_udt2]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  StoredProcedure [AMS].[test_udt2]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -437,7 +358,7 @@ begin
    --print 'hello'
 end
 GO
-/****** Object:  StoredProcedure [AMS].[TestSP]    Script Date: 14-04-2025 11:13:24 ******/
+/****** Object:  StoredProcedure [AMS].[TestSP]    Script Date: 14-04-2025 11:33:17 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
