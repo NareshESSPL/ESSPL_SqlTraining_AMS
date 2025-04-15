@@ -33,6 +33,12 @@ UNION
 SELECT PINCODE, City FROM Supplier
 ORDER BY City;
 
+--get list of city we have both customer and suppier
+SELECT PINCODE, City FROM Customer
+UNION
+SELECT PINCODE, 'test' as City FROM Supplier
+ORDER BY City;
+
 SELECT PINCODE, City FROM Customer
 UNION ALL
 SELECT PINCODE, City FROM Supplier

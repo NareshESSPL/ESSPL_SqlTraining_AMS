@@ -1,0 +1,1 @@
+select COALESCE(UserName, CreatedBy) from AMS.[User]
