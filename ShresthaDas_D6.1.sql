@@ -487,7 +487,7 @@ as begin
     ac.AccountID, ac.AccountNo, ac.IsSaving,
     a.AddressID, a.AddressDetail,u.CreatedBy,u.Created 
     act.AccountTransactionID, act.Amount, act.IsDebit, TransactionDate from AMS.[User] u
-	inner joim AMS.[Address] a on a.UserID=u.UserID
+	inner join AMS.[Address] a on a.UserID=u.UserID
 	inner join AMS.UserAccountMapping uam on uam.UserID=u.UserID
 	inner join AMS.AccountTransaction act on act.AccountID=ac.AccountID
 	inner join AMS.AccountTransaction act on act.AccountID=ac.AccountID
