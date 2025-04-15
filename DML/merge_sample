@@ -1,0 +1,38 @@
+create table testMergeSource
+(
+  id int identity(1,1) primary key,
+  name varchar(200)
+)
+
+
+create table testMergeTarget
+(
+  id int identity(1,1) primary key,
+  name varchar(200),
+  CreatedDate DateTime,
+)
+
+insert into testMergeSource values ('naresh')
+
+insert into testMergeSource values ('suresh')
+
+insert into testMergeSource values ('mahesh')
+
+
+MERGE testMergeTarget t
+ USING testMergeSource s ON s.id= t.id
+
+WHEN MATCHED
+    THEN UPDATE SET 
+        t.name = s.name
+
+WHEN NOT MATCHED BY TARGET
+    THEN INSERT (name) values (s.name)
+
+WHEN NOT MATCHED BY SOURCE 
+    THEN DELETE;
+
+
+
+
+
