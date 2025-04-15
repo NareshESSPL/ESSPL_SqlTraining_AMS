@@ -40,5 +40,15 @@ select u.UserID,u.UserName,u.DOB,u.DOJ,ac.AccountID,ac.AccountNo, u.MobileNo,a.A
 	 inner join AMS.Account ac on ac.AccountID = uam.AccountID
 	 inner join AMS.AccountTransaction act on act.AccountID = ac.AccountID
 
+CREATE TABLE [AppUser_History](
+	[UserID] [int] NULL,
+	[UserName] [varchar](250) NULL,
+	[OldUserName] [varchar](250) NULL,
+	[Operation] [varchar](3) NOT NULL,
+	[ModifiedDate] DateTime NOT NULL,
+	CHECK(operation = 'INS' or operation='DEL' or operation = 'UPD')
+)
+GO
+
 
 
