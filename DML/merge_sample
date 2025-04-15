@@ -31,8 +31,14 @@ WHEN NOT MATCHED BY TARGET
 
 WHEN NOT MATCHED BY SOURCE 
     THEN DELETE;
-
-
+/*Test data*/
+select u.UserID,u.UserName,u.DOB,u.DOJ,ac.AccountID,ac.AccountNo, u.MobileNo,a.AddressID,a.AddressDetail,
+	 ac.IsSaving,act.AccountTransactionID,act.Amount,act.IsDebit,u.CreatedBy,u.Created 
+  from AMS.[User] u
+	 inner join AMS.[Address] a on a.UserID = u.UserID
+	 inner join AMS.UserAccountMapping uam on uam.UserID = u.UserID
+	 inner join AMS.Account ac on ac.AccountID = uam.AccountID
+	 inner join AMS.AccountTransaction act on act.AccountID = ac.AccountID
 
 
 
