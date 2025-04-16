@@ -1,6 +1,7 @@
 BEGIN TRY
 
  BEGIN TRAN
+
   insert into Itemtype(ItemtypeId, ItemtypeName) values (111, 'testtype')
   insert into Item(ItemId, ItemtypeId, Itemname) values (199, 879, 'testtype')
  
@@ -25,6 +26,3 @@ BEGIN CATCH
   PRINT 'Exception happened.Please refer the error log table'
 
 END CATCH
-
-select * from Item
-select * from ItemType
