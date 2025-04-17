@@ -13,15 +13,15 @@ BEGIN TRANSACTION;
 BEGIN TRY
     -- Savepoint 1
     SAVE TRANSACTION Savepoint1;
-    INSERT INTO Table1 (Column1) VALUES ('Value1');
+    INSERT INTO AppRole VALUES (1, 'Admin');
 
     -- Savepoint 2
     SAVE TRANSACTION Savepoint2;
-    INSERT INTO Table2 (Column2) VALUES ('Value2');
+    INSERT INTO AppUser (1) VALUES (1, 'naresh');
 
     -- Savepoint 3
     SAVE TRANSACTION Savepoint3;
-    INSERT INTO Table3 (Column3) VALUES ('Value3');
+    INSERT INTO AppUserRoleMapping VALUES (1, 1);
 
     -- Commit the transaction if all operations succeed
     COMMIT TRANSACTION;

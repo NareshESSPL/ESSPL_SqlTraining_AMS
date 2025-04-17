@@ -27,7 +27,7 @@ SET @InputParam = '<xml>
 	</User>
 </xml>'
 
-SELECT @InputParam.value('(xml/User/LName)[1]', 'NVARCHAR(100)') AS LastName;
+--SELECT @InputParam.value('(xml/User/LName)[1]', 'NVARCHAR(100)') AS LastName;
 
 EXEC proc_TestOutputParam @Input = @InputParam, @Output = @OutputParam OUTPUT
 PRINT @OutputParam
