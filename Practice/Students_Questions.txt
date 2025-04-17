@@ -5,4 +5,5 @@
 --insert into ProductSummary table where Category columns
 --will have two type values one is 'Premium' where Total_Amount > 500
 -- and  where EconomyTotal_Amount between 2000 and 50000
+5.Update the CATEGORY in the Orders table based on the average Total_Amount
 
