@@ -1,0 +1,1 @@
+1. Update the Total_Amount in the Orders table based on a discount stored in another table (Discounts)
