@@ -1,7 +1,7 @@
 ﻿/*
   Created By : Suraj Kumar Sah
   Date : 18-04-2025
-  Desc : Practice - 1 (Questions)
+  Desc : Practice - 2 (Inserting Dummy Data)
 */
 
 ﻿USE [Practice]
