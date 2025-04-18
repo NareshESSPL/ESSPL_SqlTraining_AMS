@@ -181,82 +181,10 @@ CREATE OR ALTER proc CreateDummyrecordsForOrder
  
  select * from OrderSumamry;
  select * from #temp_offset;
- ---------------------
---merge 
-merge OrderSumamry t
-	using #temp_offset s on s.Order_ID=t.OrderID
-when matched then CREATE DATABASE EXAMPLE;
- USE EXAMPLE;
-
- CREATE SCHEMA AMS;
-CREATE TABLE AMS.[User]
-(
-  UserID BigInt Identity(1,1) Not Null,
-  UserName NVarchar(250) Not Null,
-  DOB DateTime Not Null,
-  DOJ DateTime Not Null,
-  Balance Decimal(10,6),
-  AccountNo Int Not Null,
-  MobileNo Int Not Null,
-  CreatedBy Varchar(250) Not Null,
-  Created DateTime Not Null,
- )
-
-ALTER TABLE AMS.[User]
-ADD CONSTRAINT [PK_AMS_User_UserID]  PRIMARY KEY  (UserID);
-
-ALTER TABLE AMS.[User]
-ADD CONSTRAINT DF_AMS_User_Created DEFAULT GETDATE() FOR Created;
 
 
 
-CREATE PROCEDURE AMS.Proc_User_insert
- as begin 
-  insert into AMS.[User] (UserName,DOB,DOJ,Balance,AccountNo,MobileNo,CreatedBy) VALUES 
-  ('test','1997-09-05','2005-07-09',600,12345,9876,'testuser'),
-  ('test1','2003-09-08','1998-07-23',800,26637,3838,'test1user');
- end
-
- exec AMC.Proc_User_Insert
- select * from AMS.[User]
- go
-
- alter procedure AMS.Proc_User_Insert
- @UserName nvarchar,
- @DOB datetime,
- @DOJ datetime,
- @Balance decimal,
- @AccountNo int,
- @MoboleNo int,
- @CreatedBy varchar(250)='defaultUser'
- as begin 
- insert into AMS.[User] (UserName,DOB,DOJ,Balance,AccountNo,MobileNo,CreatedBy) VALUES 
- (@UserName,@DOB,@DOJ,@Balance,@AccountNo,@MobileNo,@CreatedBy)
- end 
- EXEC AMS.Proc_User_Insert 'testing','2025-03-04','2002-03-04',500,123,9876,'testuser'
 
 
- create procedure AMS.Proc_UserAndAddress_Insert
- @UserName nvarchar,
- @DOB datetime,
- @DOJ datetime,
- @Balance decimal,
- @AccountNo int,
- @Mobi int,
- @CreatedBy varchar(250)='defaultUser'
- as begin
- declare @UserId BIGINT
-  insert into AMS.[User] (UserName,DOB,DOJ,Balance,AccountNo,MobileNo,CreatedBy) VALUES 
- (@UserName,@DOB,@DOJ,@Balance,@AccountNo,@MobileNo,@CreatedBy)
 
- set @UserId=scope_identity()
- insert into AMS.[Address](UserId,AddressDetail,CreatedBy)
- values(@Userid,@AddressDetail,@CreatedBy)
- end
-
-	update  set t.Order_ID=s.Order_ID,t.Customer_Name=s.Customer_Name,t.Product=s.Product,t.Quantity=s.Quantity,
-	t.Order_Date=s.OrderDate,t.Total_Amount=s.Total_Amount,t.category=s.category
-when not matched by target 
-then
-   insert(Order_Id,Customer_Name,Product,Quantity,Order_Date,Total_Amount,Category)
-   values(s.Order_Id,s.Customer_Name,s.Product,s.Quantity,s.Order_Date,s.Total_Amount,Category);
+	
