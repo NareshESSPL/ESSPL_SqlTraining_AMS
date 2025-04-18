@@ -3,18 +3,18 @@ USE BankingManagementSystem; go
 -- Stored procedure to insert a new user and their associated details
 
 CREATE PROCEDURE BMS.PROC_USER_INSERTALL
-    @Username NVarchar(250),
-    @DOB DateTime,
-    @DOJ DateTime,
-    @BALANCE Decimal(10,6),
-    @AccountNo Int,
+Â Â Â  @Username NVarchar(250),
+Â Â Â  @DOB DateTime,
+Â Â Â  @DOJ DateTime,
+Â Â Â  @BALANCE Decimal(10,6),
+Â Â Â  @AccountNo Int,
     @AccountTransaction BigInt,
-    @MOBILENO BigInt,
-    @Address NVarchar(max),
-    @IsSaving Bit,
+Â Â Â  @MOBILENO BigInt,
+Â Â Â  @Address NVarchar(max),
+Â Â Â  @IsSaving Bit,
     @IsDebit Bit,
-    @Amount Decimal(10,6),
-    @CreatedBy Varchar(250) = 'admin'
+Â Â Â  @Amount Decimal(10,6),
+Â Â Â  @CreatedBy Varchar(250) = 'admin'
 
  -- Declare variables to store the newly generated UserID and AccountID
 	AS BEGIN
