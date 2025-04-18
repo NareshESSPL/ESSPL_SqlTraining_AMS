@@ -215,3 +215,30 @@ create table OrderSummary(
   ) as x
   where rn > 1
  )
+
+--remove all the duplicate records from employee table
+ ;with cte_duplicates as (
+    select EmployeeID, ROW_NUMBER() over (partition by FirstName, LastName, Position, Salary order by EmployeeID) as rnk 
+	from Employees
+	--select * from Employees
+ )
+
+ select * from Employees e1 join cte_duplicates e2 on e1.EmployeeID = e2.EmployeeID 
+
+ delete from Employees where EmployeeID in (
+    select EmployeeID from cte_duplicates where rnk > 1
+ )
+
+ --using join find duplicate id's
+ select distinct e1.* from Employees e1 join Employees e2
+ on  e1.FirstName = e2.FirstName and e1.LastName = e2.LastName and e1.Position = e2.Position and e1.Salary = e2.Salary and e1.EmployeeID > e2.EmployeeID
+go
+
+--update quantity column of orders as the cumulative sum of orders by customer name
+;with cte_SumByName as(
+    --select * from Orders
+    select sum(Quantity) s,Customer_Name from Orders group by Customer_Name
+)
+update O 
+set O.Quantity = C.s 
+from Orders O join cte_SumByName C on O.Customer_Name = C.Customer_Name 
