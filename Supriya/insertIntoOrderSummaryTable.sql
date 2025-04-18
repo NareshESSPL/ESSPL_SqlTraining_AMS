@@ -1,4 +1,4 @@
-﻿﻿USE [Practice]
+﻿USE [Practice]
 --go
 
 CREATE OR ALTER proc CreateDummyrecordsForOrder
@@ -80,12 +80,12 @@ go
 create or alter proc proc_SyncOrderSummary
 as begin
 
-  declare @count bigint, @offset bigint, @record_no bigint
-  set @count = 1
+  declare @index bigint, @offset bigint, @record_no bigint
+  set @index = 1
   set @offset = 0
   set @record_no = 100
 
-  while @count <> 1001
+  while @offset < 1001
   begin
     print @offset
     create table #tempTable(
@@ -99,10 +99,7 @@ as begin
     );
 
     insert into #tempTable 
-    select * from Orders 
-	order by Order_ID 
-	offset @offset rows
-	fetch next @record_no rows only;
+    exec proc_chunking @index,@record_no
 
     merge OrderSummary t using #tempTable s on s.Order_ID = t.Order_ID
     when matched 
@@ -118,8 +115,7 @@ as begin
     values (s.Order_ID ,s.Customer_Name ,s.Product ,s.Quantity,s.Order_Date ,s.Total_Amount ,s.CATEGORY);
 
 	set @offset += 100
-	set @count += 100
-
+	set @index += 1
 	drop table #tempTable
   end
 end
@@ -139,21 +135,18 @@ create type table_type as table (
 create or alter proc proc_SyncOrderSummary
 as begin
 
-  declare @count bigint, @offset bigint, @record_no bigint
-  set @count = 1
+  declare @index bigint, @offset bigint, @record_no bigint
+  set @index  = 1
   set @offset = 0
   set @record_no = 100
 
-  while @count <= 1001
+  while @offset < 1001
   begin
     print @offset
     declare @ChunkedTable as table_type
 
     insert into @ChunkedTable 
-    select * from Orders
-	order by Order_ID 
-	offset @offset rows
-	fetch next @record_no rows only;
+    exec proc_chunking @index,@record_no
 
     merge OrderSummary t using @ChunkedTable s on s.Order_ID = t.Order_ID
     when matched 
@@ -169,7 +162,7 @@ as begin
     values (s.Order_ID ,s.Customer_Name ,s.Product ,s.Quantity,s.Order_Date ,s.Total_Amount ,s.CATEGORY);
 
 	set @offset += 100
-	set @count += 100
+	set @index += 1
 
   end
 end
