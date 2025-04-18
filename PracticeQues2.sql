@@ -1,0 +1,262 @@
+
+-------------------------------------------------
+--Question 8
+select * from Employees;
+with cte_raw as(
+select *,count(*),ROW_NUMBER() OVER(partition by FirstName,LastName,Position,Salary ORDER BY Salary) AS ROWNUMBER
+--Rank() OVER(partition by FirstName,LastName,Position,Salary ORDER BY Salary) AS Rank_num
+--DENSE_RANK() OVER(partition by FirstName,LastName,Position,Salary ORDER BY Salary) AS dense_rank
+from Employees)
+--select * from cte_raw;
+
+select *,COUNT(*) OVER(partition by FirstName,LastName,Position,Salary ORDER BY Salary)COUNTFORGROUP
+from cte_raw
+where ROWNUMBER >1;
+
+select  e1.* from Employees e1
+where exists(select top 1 * from employees e2
+where e1.FirstName=e2.FirstName and e1.EmployeeID!=e2.EmployeeID)
+order by Salary;
+------------------------
+--Question 8
+;with cte1_order  as(
+select Customer_Name,sum(Quantity) as sum_quan
+from Orders 
+group by Customer_Name
+)
+update Orders
+set Quantity=sum_quan
+from orders o join cte1_order c on o.Customer_Name=c.Customer_Name;
+
+select * from Orders;
+update  Orders
+set Quantity =(select top 1 sum(quantity) from Orders group by Customer_Name);
+
+------------------------
+--Question 9
+alter procedure proc_Index
+(
+	@index_no int,
+	@no_of_records int
+)
+as
+begin
+	declare @offset bigint
+	set @offset=(@index_no-1)* @no_of_records
+
+	select *
+	from orders
+	order by Total_Amount
+	OFFSET @offset rows
+	fetch next @no_of_records rows only;
+
+END
+exec proc_Index 2,4;
+
+--create table #temp_offset (
+--    Order_ID INT PRIMARY KEY,
+--    Customer_Name NVARCHAR(50),
+--    Product NVARCHAR(50),
+--    Quantity INT,
+--    Order_Date DATE,
+--    Total_Amount DECIMAL(10, 2),
+--    CATEGORY NVARCHAR(50)
+--)
+--create proc proc_testout
+--as
+--begin
+--exec proc_Index 2,4
+--end
+--insert into #temp_offset
+--exec proc_Index 2,4;
+--select * from #temp_offset
+--select * from orders;
+----------------------------
+-----------------------
+--merge 
+alter procedure proc_merge_ordersummary
+as
+begin
+declare @index_no1 int, @input_no_of_records int
+
+set @index_no1 = 1;
+set @input_no_of_records =100
+
+IF OBJECT_ID('tempdb..#temp_offset') IS NOT NULL
+    DROP TABLE #temp_offset
+
+create table #temp_offset (
+    Order_ID INT PRIMARY KEY,
+    Customer_Name NVARCHAR(50),
+    Product NVARCHAR(50),
+    Quantity INT,
+    Order_Date DATE,
+    Total_Amount DECIMAL(10, 2),
+    CATEGORY NVARCHAR(50)
+)
+
+insert into #temp_offset
+exec proc_Index @index_no = @index_no1, @no_of_records = @input_no_of_records
+
+while exists(select top 1 * from #temp_offset)
+begin
+	
+	--merge temp into ordersummary
+	merge into OrderSumamry t
+		using #temp_offset s on t.Order_ID=s.Order_ID
+	when matched then 
+		update  set t.Order_ID=s.Order_ID,t.Customer_Name=s.Customer_Name,t.Product=s.Product,t.Quantity=s.Quantity,
+					t.Order_Date=s.Order_Date,t.Total_Amount=s.Total_Amount,t.category=s.category
+	when not matched by target 
+	then
+	   insert(Order_Id,Customer_Name,Product,Quantity,Order_Date,Total_Amount,Category)
+	   values(s.Order_Id,s.Customer_Name,s.Product,s.Quantity,s.Order_Date,s.Total_Amount,Category);
+
+	 
+	set @index_no1 = @index_no1 + 1
+
+	--clean the temp table
+    delete from #temp_offset
+	--insert into temp table with fresh index
+    insert into #temp_offset
+    exec proc_Index @index_no = @index_no1, @no_of_records = @input_no_of_records
+
+
+ end
+
+   drop table #temp_offset
+end
+------- --------------------------------------------------------------------------------------------------------------------------------------------
+CREATE OR ALTER proc CreateDummyrecordsForOrder
+  @MaxCount BIGINT =1000
+ as
+ begin
+   truncate table Orders
+   
+ 
+   declare 
+     @Order_ID int,
+ 	@Customer_Name nvarchar(50) ,
+ 	@Product nvarchar(50) ,
+ 	@Quantity int ,
+ 	@Order_Date date ,
+ 	@Total_Amount decimal(10, 2) ,
+ 	@CATEGORY nvarchar(50) 
+ 
+   declare @count int = 0;
+ 
+   set @Order_Date = '1990-01-01'
+   
+   WHILE @count < = @MaxCount
+   BEGIN
+   --Do not delete
+   select @count = @count + 1
+ 
+   set @Order_ID = @count
+   set @Customer_Name = 'TestName' + cast(@count as varchar)
+   set @Product = 'Product' + cast(@count as varchar)
+   set @Quantity = 2
+   set @Order_Date = dateadd(day, -1, @Order_Date)
+   set @Total_Amount = 1000
+   set @CATEGORY = 'A'
+ 
+   INSERT INTO [dbo].[Orders]
+            ([Order_ID]
+            ,[Customer_Name]
+            ,[Product]
+            ,[Quantity]
+            ,[Order_Date]
+            ,[Total_Amount]
+            ,[CATEGORY])
+      VALUES
+            (@Order_ID
+            ,@Customer_Name
+            ,@Product
+            ,@Quantity
+            ,@Order_Date
+            ,@Total_Amount
+            ,@CATEGORY)
+ 
+ end
+ 
+ select * from OrderSumamry;
+ select * from #temp_offset;
+ ---------------------
+--merge 
+merge OrderSumamry t
+	using #temp_offset s on s.Order_ID=t.OrderID
+when matched then CREATE DATABASE EXAMPLE;
+ USE EXAMPLE;
+
+ CREATE SCHEMA AMS;
+CREATE TABLE AMS.[User]
+(
+  UserID BigInt Identity(1,1) Not Null,
+  UserName NVarchar(250) Not Null,
+  DOB DateTime Not Null,
+  DOJ DateTime Not Null,
+  Balance Decimal(10,6),
+  AccountNo Int Not Null,
+  MobileNo Int Not Null,
+  CreatedBy Varchar(250) Not Null,
+  Created DateTime Not Null,
+ )
+
+ALTER TABLE AMS.[User]
+ADD CONSTRAINT [PK_AMS_User_UserID]  PRIMARY KEY  (UserID);
+
+ALTER TABLE AMS.[User]
+ADD CONSTRAINT DF_AMS_User_Created DEFAULT GETDATE() FOR Created;
+
+
+
+CREATE PROCEDURE AMS.Proc_User_insert
+ as begin 
+  insert into AMS.[User] (UserName,DOB,DOJ,Balance,AccountNo,MobileNo,CreatedBy) VALUES 
+  ('test','1997-09-05','2005-07-09',600,12345,9876,'testuser'),
+  ('test1','2003-09-08','1998-07-23',800,26637,3838,'test1user');
+ end
+
+ exec AMC.Proc_User_Insert
+ select * from AMS.[User]
+ go
+
+ alter procedure AMS.Proc_User_Insert
+ @UserName nvarchar,
+ @DOB datetime,
+ @DOJ datetime,
+ @Balance decimal,
+ @AccountNo int,
+ @MoboleNo int,
+ @CreatedBy varchar(250)='defaultUser'
+ as begin 
+ insert into AMS.[User] (UserName,DOB,DOJ,Balance,AccountNo,MobileNo,CreatedBy) VALUES 
+ (@UserName,@DOB,@DOJ,@Balance,@AccountNo,@MobileNo,@CreatedBy)
+ end 
+ EXEC AMS.Proc_User_Insert 'testing','2025-03-04','2002-03-04',500,123,9876,'testuser'
+
+
+ create procedure AMS.Proc_UserAndAddress_Insert
+ @UserName nvarchar,
+ @DOB datetime,
+ @DOJ datetime,
+ @Balance decimal,
+ @AccountNo int,
+ @Mobi int,
+ @CreatedBy varchar(250)='defaultUser'
+ as begin
+ declare @UserId BIGINT
+  insert into AMS.[User] (UserName,DOB,DOJ,Balance,AccountNo,MobileNo,CreatedBy) VALUES 
+ (@UserName,@DOB,@DOJ,@Balance,@AccountNo,@MobileNo,@CreatedBy)
+
+ set @UserId=scope_identity()
+ insert into AMS.[Address](UserId,AddressDetail,CreatedBy)
+ values(@Userid,@AddressDetail,@CreatedBy)
+ end
+
+	update  set t.Order_ID=s.Order_ID,t.Customer_Name=s.Customer_Name,t.Product=s.Product,t.Quantity=s.Quantity,
+	t.Order_Date=s.OrderDate,t.Total_Amount=s.Total_Amount,t.category=s.category
+when not matched by target 
+then
+   insert(Order_Id,Customer_Name,Product,Quantity,Order_Date,Total_Amount,Category)
+   values(s.Order_Id,s.Customer_Name,s.Product,s.Quantity,s.Order_Date,s.Total_Amount,Category);
